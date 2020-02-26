@@ -1,0 +1,143 @@
+/*
+  elm-hot creates an additional div wrapper around the app to make HMR possible.
+  This could break styling in development mode if you are using Elm UI.
+
+  More context in the issue:
+    https://github.com/halfzebra/create-elm-app/issues/320
+*/
+[data-elm-hot="true"] {
+  height: inherit;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP');
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  margin: 0;
+  text-align: center;
+  color: #293c4b;
+  background-color: #F0F0F0;
+  background: url("img/bg2.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+img {
+  margin: 20px 0;
+  max-width: 200px;
+}
+
+h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+button {
+  margin: 0.3em;
+  padding: 0.2em;
+}
+
+.config-input {
+ width: 50%;
+}
+
+.header-nav {
+  background-color: rgb(0, 0, 0, 0.6);
+  padding: 1em;
+  border-bottom: 1px;
+  border-bottom-color: rgb(0, 0, 0, 0.7);
+  border-bottom-style: solid;
+}
+
+.header-nav ul {
+text-align:left;
+}
+
+.header-nav__top {
+}
+
+.header-nav ul li {
+  display: inline;
+  margin-right: 1em;
+}
+
+.header-nav ul li a {
+    text-decoration: none;
+    color: rgb(200, 200, 200);
+}
+
+.header-nav ul li a:hover {
+  color: #00836b;
+  background-color: rgba(44,154,122,.075);
+}
+
+.element-panel {
+  padding: 1em;
+  margin: 1em;
+  background-color: white;
+  border-radius: 5px 5px 5px 5px;
+  filter:drop-shadow(1px 3px 5px rgba(0, 0, 0, 0.2));
+  text-align: left;
+}
+
+.date-list {
+  display: flex;
+  justify-content: center;
+}
+
+.date-list__body {
+  text-align: left;
+}
+
+.state-waiting {
+  font-size: 3em;
+  color: rgba(0, 255, 0, 0.5)
+}
+
+.state-running {
+  font-size: 3em;
+  color: rgba(0, 0, 255, 0.5)
+}
+
+.state-finished {
+  font-size: 3em;
+  color: rgba(255, 0, 0, 0.5)
+}
+
+.state-error {
+  font-size: 3em;
+  color: rgba(150, 150, 150, 0.5)
+}
+
+.start-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-end__row {
+  display: flex;
+  flex-direction: row;
+}
+
+.start-end__point {
+  padding: 10px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.start-end__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 3em;
+}
