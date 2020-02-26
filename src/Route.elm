@@ -24,8 +24,8 @@ datePointParser =
     map fun (top </> int </> int </> int)
 
 
-setParser : Parser (StartEnd.Date -> a) a
-setParser =
+startEndParser : Parser (StartEnd.Date -> a) a
+startEndParser =
     map StartEnd.Date (s "start" </> datePointParser </> s "end" </> datePointParser)
 
 
@@ -34,5 +34,5 @@ parser =
     s "stimer"
         </> oneOf
                 [ map Top top
-                , map Start setParser
+                , map Start startEndParser
                 ]
