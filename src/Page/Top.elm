@@ -82,32 +82,6 @@ updateMinutes amount point =
     { point | minute = Lp.new point.minute 0 59 |> Lp.add amount |> Lp.get }
 
 
-downMinutes : Int -> StartEnd.Point -> StartEnd.Point
-downMinutes step point =
-    let
-        newMinutes =
-            if (point.minute - step) < 0 then
-                59
-
-            else
-                point.minute - step
-    in
-    { point | minute = newMinutes }
-
-
-upMinutes : Int -> StartEnd.Point -> StartEnd.Point
-upMinutes step point =
-    let
-        newMinutes =
-            if (point.minute + step) > 59 then
-                0
-
-            else
-                point.minute + step
-    in
-    { point | minute = newMinutes }
-
-
 {-| やめた。思い通りにならない。「3」を消して「4」を入力しようとかできない。諦める。
 ]
 -}
