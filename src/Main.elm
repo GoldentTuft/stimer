@@ -100,7 +100,7 @@ update msg model =
         ( StartMsg subMsg, StartPage subModel ) ->
             let
                 ( newModel, topCmd ) =
-                    Page.Start.update subMsg subModel
+                    Page.Start.update subMsg subModel model.key
             in
             ( { model | page = StartPage newModel }
             , Cmd.map StartMsg topCmd

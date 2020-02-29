@@ -1,5 +1,6 @@
 module Page.Start exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser.Navigation
 import Data.StartEnd as StartEnd
 import Env exposing (Env)
 import Html exposing (..)
@@ -48,8 +49,12 @@ type Msg
     | Tick Time.Posix
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+
+-- | Back
+
+
+update : Msg -> Model -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+update msg model key =
     case msg of
         AdjustTimeZone zone ->
             ( { model | zone = zone }, Cmd.none )
@@ -84,10 +89,13 @@ update msg model =
 
 
 
+-- 元のデータには戻らないからやめてしまった。ページは戻るがデータは戻らない。
+-- Back ->
+--     ( model, Browser.Navigation.back key 1 )
 -- VIEW
 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
     let
         now =
@@ -131,6 +139,8 @@ view model =
 
             Error ->
                 div [ class "state-error" ] [ text "Error" ]
+
+        -- , button [ onClick Back ] [ text "back" ]
         ]
 
 

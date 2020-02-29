@@ -1,5 +1,6 @@
 module Page.Top exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser.Navigation
 import Data.StartEnd as StartEnd
 import Env exposing (Env)
 import Html exposing (..)
@@ -7,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Encode as E
+import Looper as Lp
 import Ports
 import Task
 import Time
@@ -48,15 +50,16 @@ init url =
 type Msg
     = AdjustTimeZone Time.Zone
     | AdjustTime Time.Posix
-    | DownDays PointType
-    | UpDays PointType
-    | DownHours PointType Int
-    | UpHours PointType Int
-    | DownMinutes PointType Int
-    | UpMinutes PointType Int
+    | UpdateDays Int PointType
+    | UpdateHours Int PointType
+    | UpdateMinutes Int PointType
     | Tick Time.Posix
     | OpenLink
     | CopyLink
+
+
+
+--| LoadLink
 
 
 type PointType
@@ -64,56 +67,19 @@ type PointType
     | End
 
 
-downDays : StartEnd.Point -> StartEnd.Point
-downDays point =
-    let
-        newDays =
-            if (point.day - 1) < 1 then
-                31
-
-            else
-                point.day - 1
-    in
-    { point | day = newDays }
+updateDays : Int -> StartEnd.Point -> StartEnd.Point
+updateDays amount point =
+    { point | day = Lp.new point.day 1 31 |> Lp.add amount |> Lp.get }
 
 
-upDays : StartEnd.Point -> StartEnd.Point
-upDays point =
-    let
-        newDays =
-            if (point.day + 1) > 31 then
-                1
-
-            else
-                point.day + 1
-    in
-    { point | day = newDays }
+updateHours : Int -> StartEnd.Point -> StartEnd.Point
+updateHours amount point =
+    { point | hour = Lp.new point.hour 0 23 |> Lp.add amount |> Lp.get }
 
 
-downHours : Int -> StartEnd.Point -> StartEnd.Point
-downHours step point =
-    let
-        newHours =
-            if (point.hour - step) < 0 then
-                23
-
-            else
-                point.hour - step
-    in
-    { point | hour = newHours }
-
-
-upHours : Int -> StartEnd.Point -> StartEnd.Point
-upHours step point =
-    let
-        newHours =
-            if (point.hour + step) > 23 then
-                0
-
-            else
-                point.hour + step
-    in
-    { point | hour = newHours }
+updateMinutes : Int -> StartEnd.Point -> StartEnd.Point
+updateMinutes amount point =
+    { point | minute = Lp.new point.minute 0 59 |> Lp.add amount |> Lp.get }
 
 
 downMinutes : Int -> StartEnd.Point -> StartEnd.Point
@@ -199,86 +165,44 @@ update msg model =
         Tick time ->
             ( { model | now = time }, Cmd.none )
 
-        DownDays ptype ->
+        UpdateDays amount ptype ->
             case ptype of
                 Start ->
-                    ( downDays model.startEnd.start
+                    ( updateDays amount model.startEnd.start
                         |> setStartPoint model
                     , Cmd.none
                     )
 
                 End ->
-                    ( downDays model.startEnd.end
+                    ( updateDays amount model.startEnd.end
                         |> setEndPoint model
                     , Cmd.none
                     )
 
-        UpDays ptype ->
+        UpdateHours amount ptype ->
             case ptype of
                 Start ->
-                    ( upDays model.startEnd.start
+                    ( updateHours amount model.startEnd.start
                         |> setStartPoint model
                     , Cmd.none
                     )
 
                 End ->
-                    ( upDays model.startEnd.end
+                    ( updateHours amount model.startEnd.end
                         |> setEndPoint model
                     , Cmd.none
                     )
 
-        DownHours ptype step ->
+        UpdateMinutes amount ptype ->
             case ptype of
                 Start ->
-                    ( downHours step model.startEnd.start
+                    ( updateMinutes amount model.startEnd.start
                         |> setStartPoint model
                     , Cmd.none
                     )
 
                 End ->
-                    ( downHours step model.startEnd.end
-                        |> setEndPoint model
-                    , Cmd.none
-                    )
-
-        UpHours ptype step ->
-            case ptype of
-                Start ->
-                    ( upHours step model.startEnd.start
-                        |> setStartPoint model
-                    , Cmd.none
-                    )
-
-                End ->
-                    ( upHours step model.startEnd.end
-                        |> setEndPoint model
-                    , Cmd.none
-                    )
-
-        DownMinutes ptype step ->
-            case ptype of
-                Start ->
-                    ( downMinutes step model.startEnd.start
-                        |> setStartPoint model
-                    , Cmd.none
-                    )
-
-                End ->
-                    ( downMinutes step model.startEnd.end
-                        |> setEndPoint model
-                    , Cmd.none
-                    )
-
-        UpMinutes ptype step ->
-            case ptype of
-                Start ->
-                    ( upMinutes step model.startEnd.start
-                        |> setStartPoint model
-                    , Cmd.none
-                    )
-
-                End ->
-                    ( upMinutes step model.startEnd.end
+                    ( updateMinutes amount model.startEnd.end
                         |> setEndPoint model
                     , Cmd.none
                     )
@@ -299,6 +223,11 @@ update msg model =
 
 
 
+-- LoadLink ->
+--     ( model
+--     , StartEnd.createLink model.url model.startEnd
+--         |> Browser.Navigation.load
+--     )
 -- VIEW
 
 
@@ -327,6 +256,8 @@ view model =
             , text (StartEnd.createLink model.url model.startEnd)
             , button [ onClick OpenLink ] [ text "open" ]
             , button [ onClick CopyLink ] [ text "copy" ]
+
+            --, button [ onClick LoadLink ] [ text "load" ]
             ]
         ]
 
@@ -335,8 +266,8 @@ viewDays : PointType -> Int -> Html Msg
 viewDays ptype num =
     div []
         [ text "days"
-        , button [ onClick (DownDays ptype) ] [ text "⬇" ]
-        , button [ onClick (UpDays ptype) ] [ text "⬆" ]
+        , button [ onClick (UpdateDays -1 ptype) ] [ text "⬇" ]
+        , button [ onClick (UpdateDays 1 ptype) ] [ text "⬆" ]
         , br [] []
         , input [ value (String.fromInt num) ] []
         ]
@@ -346,10 +277,10 @@ viewHours : PointType -> Int -> Html Msg
 viewHours ptype num =
     div []
         [ text "hours"
-        , button [ onClick (DownHours ptype 1) ] [ text "⬇" ]
-        , button [ onClick (UpHours ptype 1) ] [ text "⬆" ]
-        , button [ onClick (DownHours ptype 5) ] [ text "5⬇" ]
-        , button [ onClick (UpHours ptype 5) ] [ text "5⬆" ]
+        , button [ onClick (UpdateHours -1 ptype) ] [ text "⬇" ]
+        , button [ onClick (UpdateHours 1 ptype) ] [ text "⬆" ]
+        , button [ onClick (UpdateHours -5 ptype) ] [ text "5⬇" ]
+        , button [ onClick (UpdateHours 5 ptype) ] [ text "5⬆" ]
         , br [] []
         , input [ value (String.fromInt num) ] []
         ]
@@ -359,10 +290,10 @@ viewMinutes : PointType -> Int -> Html Msg
 viewMinutes ptype num =
     div []
         [ text "minutes"
-        , button [ onClick (DownMinutes ptype 1) ] [ text "⬇" ]
-        , button [ onClick (UpMinutes ptype 1) ] [ text "⬆" ]
-        , button [ onClick (DownMinutes ptype 5) ] [ text "5⬇" ]
-        , button [ onClick (UpMinutes ptype 5) ] [ text "5⬆" ]
+        , button [ onClick (UpdateMinutes -1 ptype) ] [ text "⬇" ]
+        , button [ onClick (UpdateMinutes 1 ptype) ] [ text "⬆" ]
+        , button [ onClick (UpdateMinutes -5 ptype) ] [ text "5⬇" ]
+        , button [ onClick (UpdateMinutes 5 ptype) ] [ text "5⬆" ]
         , br [] []
         , input [ value (String.fromInt num) ] []
         ]
