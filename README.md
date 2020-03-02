@@ -9,8 +9,22 @@ Elmで作った、開始と終了を知らせるタイマーです。
 
 copyボタンでそのurlを人と共有すれば、便利かもしれません。
 
+## run
+
+clone repo
 ```
  git clone https://github.com/GoldentTuft/stimer.git
  cd stimer
  git clone https://github.com/GoldentTuft/looper.git
  ````
+
+install and run
+ ```
+ npm install
+ npm run dev
+ ```
+
+open url
+ ```
+ localhost:1234/stimer/
+ ```
