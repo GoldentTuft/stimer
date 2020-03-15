@@ -101,7 +101,7 @@ view model =
         now =
             StartEnd.posixToPoint model.zone model.time
     in
-    div []
+    div [ class "page-start" ]
         [ div []
             [ audio
                 [ id "sound-start"

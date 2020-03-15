@@ -207,7 +207,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "page-top" ]
         [ viewNow model.zone model.now
         , div
             [ class "start-end" ]
@@ -224,7 +224,7 @@ view model =
                 , div [ class "start-end__point" ] [ viewMinutes End model.startEnd.end.minute ]
                 ]
             ]
-        , div []
+        , div [ class "stimer-link" ]
             [ text "link"
             , br [] []
             , text (StartEnd.createLink model.url model.startEnd)

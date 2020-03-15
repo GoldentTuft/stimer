@@ -17,7 +17,8 @@
 }
 
 body {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;;
+  font-size: 16px;
   margin: 0;
   text-align: center;
   color: #293c4b;
@@ -43,6 +44,11 @@ h3 {
 button {
   margin: 0.3em;
   padding: 0.2em;
+  font-size: 100%
+}
+
+input {
+  font-size: 100%;
 }
 
 .config-input {
@@ -140,4 +146,28 @@ text-align:left;
   align-items: center;
   justify-content: space-between;
   width: 3em;
+}
+
+@media screen and (max-width: 630px) { /*ウィンドウ幅が最大479pxまでの場合に適用*/
+
+  .page-start {
+    font-size: 16px;
+  }
+
+  .page-top {
+    font-size: 24px;
+  }
+
+  .start-end__row {
+    flex-direction: column;
+  }
+
+  .stimer-link {
+    word-wrap: break-word;
+  }
+
+  .start-end__label {
+    width: auto;
+    background-color: rgba(100, 100, 100, 0.5)
+  }
 }
